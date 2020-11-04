@@ -79,6 +79,10 @@ const orderSchema = mongoose.Schema(
     deliveredAt: {
       type: Date,
     },
+    voucher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Voucher',
+    },
   },
   {
     timestamps: true,
