@@ -89,6 +89,38 @@ const orderSchema = mongoose.Schema(
   }
 );
 
+// Static method to get Numer of times the voucher used
+orderSchema.statics.getNumofUsed = async function (voucherId) {
+  const docs = await this.aggregate([
+    {
+      $match: { voucher: voucherId },
+    },
+    {
+      $group: {
+        _id: '$voucher',
+        numOfUsed: { $sum: 1 },
+      },
+    },
+  ]);
+  try {
+    await this.model('Voucher').findByIdAndUpdate(voucherId, {
+      numOfUsed,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Call getNumofUsed after save
+orderSchema.post('save', function () {
+  this.constructor.getNumofUsed(this.voucher);
+});
+
+// Call getNumofUsed before remove
+orderSchema.pre('remove', function () {
+  this.constructor.getNumofUsed(this.voucher);
+});
+
 const Order = mongoose.model('Order', orderSchema);
 
 export default Order;

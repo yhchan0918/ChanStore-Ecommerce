@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const CouponSchema = mongoose.Schema(
+const voucherSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,6 +38,6 @@ const CouponSchema = mongoose.Schema(
   }
 );
 
-const Coupon = mongoose.model('Coupon', CouponSchema);
+const Voucher = mongoose.model('Voucher', voucherSchema);
 
-export default Coupon;
+export default Voucher;
