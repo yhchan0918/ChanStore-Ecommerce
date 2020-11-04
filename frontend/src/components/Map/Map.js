@@ -118,7 +118,10 @@ export default function Map({ setForm }) {
     <div>
       <AutoComplete
         style={{
-          width: '100%',
+          zIndex: '10',
+          position: 'absolute',
+          top: '0',
+          minWidth: '400px',
           height: '40px',
           paddingLeft: 16,
           marginTop: 2,
