@@ -4,7 +4,6 @@ GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
 
 export const getCurrentAddress = async (lat, lng) => {
   const { results } = await GeoCode.fromLatLng(lat, lng);
-  console.log(results[0].formatted_address);
   const address = results[0].formatted_address,
     addressArray = results[0].address_components,
     city = getCity(addressArray),
