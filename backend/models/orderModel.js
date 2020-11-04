@@ -104,7 +104,7 @@ orderSchema.statics.getNumofUsed = async function (voucherId) {
   ]);
   try {
     await this.model('Voucher').findByIdAndUpdate(voucherId, {
-      numOfUsed,
+      numOfUsed: docs[0].numOfUsed,
     });
   } catch (error) {
     console.error(error);
@@ -120,6 +120,18 @@ orderSchema.post('save', function () {
 orderSchema.pre('remove', function () {
   this.constructor.getNumofUsed(this.voucher);
 });
+
+// find is there any match promocode
+orderSchema.methods.matchPromoCode = async function (enteredPromoCode) {
+  console.log('imcalled');
+  const voucher = await this.model('Voucher').findOne({
+    promoCode: enteredPromoCode,
+  });
+  if (voucher) {
+    return { available: true, id: voucher._id };
+  }
+  return { available: false };
+};
 
 const Order = mongoose.model('Order', orderSchema);
 

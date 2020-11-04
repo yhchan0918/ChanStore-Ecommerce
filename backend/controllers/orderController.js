@@ -13,25 +13,31 @@ const addOrderItems = asyncHandler(async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
+    promoCode,
   } = req.body;
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
     throw new Error('No order items');
-  } else {
-    const order = new Order({
-      orderItems,
-      user: req.user._id,
-      shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
-    });
-    const createdOrder = await order.save();
-    res.status(201).json(createdOrder);
   }
+  const order = new Order({
+    orderItems,
+    user: req.user._id,
+    shippingAddress,
+    paymentMethod,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    totalPrice,
+  });
+  const { available, id } = await order.matchPromoCode(promoCode);
+  if (!available) {
+    throw new Error('Invalid Promocode');
+  }
+  order.voucher = id;
+
+  const createdOrder = await order.save();
+  res.status(201).json(createdOrder);
 });
 
 // @desc Get order by ID

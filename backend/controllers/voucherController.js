@@ -8,8 +8,8 @@ const getVouchers = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
 
-  const count = await Voucher.countDocuments({ ...keyword });
-  const ouchers = await Voucher.find({ ...keyword })
+  const count = await Voucher.countDocuments();
+  const vouchers = await Voucher.find()
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
@@ -68,11 +68,11 @@ const updateVoucher = asyncHandler(async (req, res) => {
   const voucher = await Voucher.findById(req.params.id);
 
   if (voucher) {
-    voucher.name = name;
-    voucher.discountRate = discountRate;
-    voucher.promoCode = promoCode;
-    voucher.minSpend = minSpend;
-    voucher.limitUsed = limitUsed;
+    voucher.name = name || voucher.name;
+    voucher.discountRate = discountRate || voucher.discountRate;
+    voucher.promoCode = promoCode || voucher.promoCode;
+    voucher.minSpend = minSpend || voucher.minSpend;
+    voucher.limitUsed = limitUsed || voucher.limitUsed;
     const updatedVoucher = await voucher.save();
     res.json(updatedVoucher);
   } else {
