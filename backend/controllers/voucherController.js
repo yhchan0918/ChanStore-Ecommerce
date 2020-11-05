@@ -1,19 +1,30 @@
 import asyncHandler from 'express-async-handler'; //asyncHandler function is to make sure catch all the error
 import Voucher from '../models/voucherModel.js';
 
-// @desc Fetch all vouchers
+// @desc Fetch all vouchers or query by promoCode
 // @route GET /api/voucher
 // @access Public
 const getVouchers = asyncHandler(async (req, res) => {
+  const promoCode = req.query.promoCode;
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
 
-  const count = await Voucher.countDocuments();
-  const vouchers = await Voucher.find()
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
+  if (promoCode) {
+    const voucher = await Voucher.findOne({ promoCode });
+    if (voucher) {
+      res.json({ voucher });
+    } else {
+      res.status(404);
+      throw new Error('Voucher not Found');
+    }
+  } else {
+    const count = await Voucher.countDocuments();
+    const vouchers = await Voucher.find()
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
 
-  res.json({ vouchers, page, pages: Math.ceil(count / pageSize) });
+    res.json({ vouchers, page, pages: Math.ceil(count / pageSize) });
+  }
 });
 
 // @desc Fetch single voucher

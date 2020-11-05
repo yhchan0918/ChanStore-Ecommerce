@@ -13,7 +13,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
-    promoCode,
+    voucher,
   } = req.body;
 
   if (orderItems && orderItems.length === 0) {
@@ -29,12 +29,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
+    voucher,
   });
-  const { available, id } = await order.matchPromoCode(promoCode);
-  if (!available) {
-    throw new Error('Invalid Promocode');
-  }
-  order.voucher = id;
 
   const createdOrder = await order.save();
   res.status(201).json(createdOrder);

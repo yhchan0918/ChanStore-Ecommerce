@@ -10,6 +10,8 @@ import {
 export const orderCreateReducer = (state = {}, action) => {
   const { type, payload } = action;
   switch (type) {
+    case ORDER_CREATE.INITIAL:
+      return {};
     case ORDER_CREATE.AWAIT:
       return {
         loading: true,

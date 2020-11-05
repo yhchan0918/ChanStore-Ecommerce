@@ -9,6 +9,9 @@ import {
 import axios from 'axios';
 
 export const createOrder = (order) => async (dispatch, getState) => {
+  dispatch({
+    type: ORDER_CREATE.INITIAL,
+  });
   try {
     dispatch({
       type: ORDER_CREATE.AWAIT,

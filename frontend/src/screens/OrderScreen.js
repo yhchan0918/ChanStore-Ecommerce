@@ -12,6 +12,7 @@ import {
   deliverOrder,
 } from '../actions/orderActions';
 import { ORDER_PAY, ORDER_DELIVERED } from '../constants/orderConstants';
+import { CART_ACTION } from '../constants/cartConstants';
 
 const OrderScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -75,6 +76,8 @@ const OrderScreen = ({ history }) => {
 
   const successPayHandler = (paymentResult) => {
     dispatch(payOrder(id, paymentResult));
+    dispatch({ type: CART_ACTION.RESET });
+    localStorage.removeItem('cartItems');
   };
 
   const deliverHandleer = () => {

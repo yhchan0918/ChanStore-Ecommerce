@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Row,
@@ -7,17 +7,41 @@ import {
   Image,
   Card,
   ListGroupItem,
+  Form,
+  Toast,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps.js';
 import { createOrder } from '../actions/orderActions';
+import axios from 'axios';
+import { ORDER_CREATE } from '../constants/orderConstants';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
+  const [promoCode, setPromoCode] = useState('');
+  const [show, setShow] = useState(false);
+  const [toastMsg, setToastMsg] = useState(false);
+  const [voucher, setVoucher] = useState(null);
+
+  const checkVoucher = async () => {
+    try {
+      const { data } = await axios.get(`/api/vouchers/?promoCode=${promoCode}`);
+      const { voucher } = data;
+      setToastMsg('Valid PromoCode');
+      setShow(true);
+      if (voucher) {
+        setVoucher(voucher);
+      }
+    } catch (error) {
+      console.log();
+      setShow(true);
+      setToastMsg('Invalid PromoCode');
+    }
+  };
 
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
@@ -42,10 +66,18 @@ const PlaceOrderScreen = ({ history }) => {
     if (success) {
       history.push(`/order/${order._id}`);
     }
+
     // eslint-disable-next-line
   }, [history, success]);
 
+  if (voucher) {
+    cart.totalPrice = (cart.totalPrice * (1 - voucher.discountRate)).toFixed(2);
+    cart.voucher = voucher._id;
+  }
   const placeOrderHandler = () => {
+    dispatch({
+      type: ORDER_CREATE.INITIAL,
+    });
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
@@ -62,7 +94,11 @@ const PlaceOrderScreen = ({ history }) => {
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />
-      <Row>
+      <Row
+        style={{
+          position: 'relative',
+        }}
+      >
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
@@ -146,6 +182,24 @@ const PlaceOrderScreen = ({ history }) => {
               <ListGroup.Item>
                 {error && <Message variant="danger">{error}</Message>}
               </ListGroup.Item>
+              <ListGroup.Item>
+                <Form.Control
+                  className="my-2"
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Enter your promoCode"
+                />
+                <Button
+                  type="button"
+                  className="btn-block"
+                  disabled={promoCode === ''}
+                  onClick={checkVoucher}
+                  style={{ color: '#ED7014' }}
+                >
+                  Apply Promocode
+                </Button>
+              </ListGroup.Item>
               <ListGroupItem>
                 <Button
                   type="button"
@@ -159,6 +213,24 @@ const PlaceOrderScreen = ({ history }) => {
             </ListGroup>
           </Card>
         </Col>
+        <Toast
+          onClose={() => setShow(false)}
+          show={show}
+          delay={2000}
+          autohide
+          style={{
+            backgroundColor: '#FAFAFA',
+            margin: 'auto',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            bottom: '0',
+            right: '0',
+            maxHeight: '50px',
+          }}
+        >
+          <Toast.Body>{toastMsg}</Toast.Body>
+        </Toast>
       </Row>
     </>
   );

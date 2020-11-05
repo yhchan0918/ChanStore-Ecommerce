@@ -17,10 +17,10 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+      <Navbar className="shadow" expand="lg" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand>ChanShop</Navbar.Brand>
+            <Navbar.Brand className="font-weight-bold">ChanStore</Navbar.Brand>
           </LinkContainer>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -28,7 +28,12 @@ const Header = () => {
             <Route render={({ history }) => <SearchBox history={history} />} />
 
             <Nav className="ml-auto">
-              <LinkContainer to="/cart">
+              <LinkContainer style={{ color: '#ED7014' }} to="/voucher">
+                <Nav.Link>
+                  <i className="fas fa-tag"></i>Voucher
+                </Nav.Link>
+              </LinkContainer>
+              <LinkContainer style={{ color: '#FEE12B' }} to="/cart">
                 <Nav.Link>
                   <i className="fas fa-shopping-cart"></i>Cart
                 </Nav.Link>
