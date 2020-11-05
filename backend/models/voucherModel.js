@@ -25,12 +25,9 @@ const voucherSchema = mongoose.Schema(
     limitUsed: {
       type: Number,
       required: true,
-      default: 0,
     },
     numOfUsed: {
       type: Number,
-      required: true,
-      default: 0,
     },
   },
   {

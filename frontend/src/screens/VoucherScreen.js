@@ -37,33 +37,37 @@ const VoucherScreen = () => {
           <Message variant="danger">{error}</Message>
         ) : (
           vouchers.map((voucher) => (
-            <Col key={voucher._id}>
-              <Card className="mx-auto">
-                <Card.Body>
-                  <Card.Title>{voucher.name}</Card.Title>
-                  <Card.Text>
-                    <span className="d-inline-block font-weight-bold">
-                      Min Spend: RM{voucher.minSpend}
-                    </span>
-                    <span className="d-inline-block font-weight-bold">
-                      Discount Rate: {voucher.discountRate * 100}%
-                    </span>
-                  </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                  <h1 className="text-center d-block">
-                    <Badge variant="info">{voucher.promoCode}</Badge>
-                  </h1>
-                  <Button
-                    type="button"
-                    block
-                    onClick={() => handleCopyPromocode(voucher.promoCode)}
-                  >
-                    Copy To ClipBoard
-                  </Button>
-                </Card.Footer>
-              </Card>
-            </Col>
+            <div key={voucher._id}>
+              {voucher.numOfUsed < voucher.limitUsed && (
+                <Col>
+                  <Card className="mx-auto">
+                    <Card.Body>
+                      <Card.Title>{voucher.name}</Card.Title>
+                      <Card.Text>
+                        <span className="d-block font-weight-bold">
+                          Min Spend: RM{voucher.minSpend}
+                        </span>
+                        <span className="d-block font-weight-bold">
+                          Discount Rate: {voucher.discountRate * 100}%
+                        </span>
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                      <h1 className="text-center d-block">
+                        <Badge variant="info">{voucher.promoCode}</Badge>
+                      </h1>
+                      <Button
+                        type="button"
+                        block
+                        onClick={() => handleCopyPromocode(voucher.promoCode)}
+                      >
+                        Copy To ClipBoard
+                      </Button>
+                    </Card.Footer>
+                  </Card>
+                </Col>
+              )}
+            </div>
           ))
         )}
         <Toast
