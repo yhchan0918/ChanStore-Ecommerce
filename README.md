@@ -13,6 +13,9 @@ It is an e-commerce web application built with MERN stack.
   - Product Carousel feature
   - Add Product Review feature
   - Apply voucher feature
+
+# Note
+To clarify the context of this repo, this repo is based on my private gitlab repo so the first commit is quite big. Furthermore, I have decided to move that project into github repo for demonstrating portfolio purpose and also added new feature on this project.
   
 
 
